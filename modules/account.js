@@ -14,7 +14,7 @@ exports.execute = (req, res) => {
 
     let slackUserId = req.body.user_id,
         oauthObj = auth.getOAuthObject(slackUserId),
-        q = "SELECT Id, Name, OwnerID, Website, DNR FROM Account WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
+        q = "SELECT Id, Name, OwnerID, Website, DNR__c FROM Account WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
 
     force.query(oauthObj, q)
         .then(data => {
@@ -30,7 +30,7 @@ exports.execute = (req, res) => {
                     if (account.OwnerID) {
                         fields.push({title: "Owner", value: account.OwnerID, short:true});
                     }
-                    if (account.DNR) {
+                    if (account.DNR__c) {
                       fields.push({title: "DNR", value: 'True'});
                     }
                     fields.push({title: "Open in Salesforce:", value: oauthObj.instance_url + "/" + account.Id, short:false});
