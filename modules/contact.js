@@ -13,7 +13,7 @@ exports.execute = (req, res) => {
 
     let slackUserId = req.body.user_id,
         oauthObj = auth.getOAuthObject(slackUserId),
-        q = "SELECT Id, Name, Phone, MobilePhone, Email FROM Contact WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
+        q = "SELECT Id, Name, Phone, MobilePhone, Email, Title, ts2__Jobs_Applied_For__c, ts2__EmployerOrgName_1__c FROM Contact WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
 
     force.query(oauthObj, q)
         .then(data => {
@@ -23,9 +23,24 @@ exports.execute = (req, res) => {
                 contacts.forEach(function(contact) {
                     let fields = [];
                     fields.push({title: "Name", value: contact.Name, short:true});
-                    fields.push({title: "Phone", value: contact.Phone, short:true});
-                    fields.push({title: "Mobile", value: contact.MobilePhone, short:true});
-                    fields.push({title: "Email", value: contact.Email, short:true});
+                    if (contact.Phone) {
+                      fields.push({title: "Phone", value: contact.Phone, short:true});
+                    }
+                    if (contact.Mobile) {
+                      fields.push({title: "Mobile", value: contact.MobilePhone, short:true});
+                    }
+                    if (contact.Email) {
+                      fields.push({title: "Email", value: contact.Email, short:true});
+                    }
+                    if (contact.Title) {
+                      fields.push({title: "Title", value: contact.Title, short:true});
+                    }
+                    if (contact.ts2__Jobs_Applied_For__c) {
+                      fields.push({title: "Last Job Applied For", value: contact.ts2__Jobs_Applied_For__c, short:true});
+                    }
+                    if (contact.ts2__EmployerOrgName_1__c) {
+                      fields.push({title: "Employer", value: contact.ts2__EmployerOrgName_1__c, short:true});
+                    }
                     fields.push({title: "Open in Salesforce:", value: oauthObj.instance_url + "/" + contact.Id, short:false});
                     attachments.push({color: "#A094ED", fields: fields});
                 });
