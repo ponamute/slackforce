@@ -14,7 +14,7 @@ exports.execute = (req, res) => {
 
     let slackUserId = req.body.user_id,
         oauthObj = auth.getOAuthObject(slackUserId),
-        q = "SELECT Id, Name, OwnerID, Website, DNR__c, DNR_Reason__c FROM Account WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
+        q = "SELECT Id, Name, OwnerID, Website, DNR__c, DNR_Reason__c, RecordTypeId FROM Account WHERE Name LIKE '%" + req.body.text + "%' LIMIT 5";
 
     force.query(oauthObj, q)
         .then(data => {
@@ -24,6 +24,9 @@ exports.execute = (req, res) => {
                 accounts.forEach(function(account) {
                     let fields = [];
                     fields.push({title: "Name", value: account.Name, short:true});
+                    if (account.RecordTypeId) {
+                      fields.push({title: "Type", value: account.RecordTypeId});
+                    }
                     if (account.Website) {
                         fields.push({title: "Website", value: account.Website, short:true});
                     }
