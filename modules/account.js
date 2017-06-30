@@ -30,7 +30,9 @@ exports.execute = (req, res) => {
                     if (account.OwnerID) {
                         fields.push({title: "Owner", value: account.OwnerID, short:true});
                     }
-                    fields.push({title: "DNR", value: account.DNR, short:true});
+                    if (account.DNR) {
+                      fields.push({title: "DNR", value: 'True'});
+                    }
                     fields.push({title: "Open in Salesforce:", value: oauthObj.instance_url + "/" + account.Id, short:false});
                     attachments.push({color: "#7F8DE1", fields: fields});
                 });
